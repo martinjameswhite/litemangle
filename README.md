@@ -16,3 +16,4 @@ http://space.mit.edu/~molly/mangle/
 and the algorithms are described in a series of papers including
 Swanson et al. (2008; MNRAS, 387, 1391).
 
+See also https://github.com/mollyswanson/mangle .
