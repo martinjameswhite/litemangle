@@ -13,10 +13,7 @@ class LiteMangle:
     LiteMangle:
     A Python class to implement some very basic mangle routines which
     allow us to manipulate a mangle mask.
-    This is a subset of the more complicated Python-based Mangle package
-    (https://github.com/mollyswanson/mangle or
-     https://github.com/mollyswanson/manglepy which were built upon and
-     dramatically extend this code),
+    This is a subset of the more complicated Python-based Mangle package,
     though it contains more methods than strictly necessary.
     The class is initialized with 1 argument, the file name of an
     ascii string (in Mangle polygon format) containing the mask.
@@ -124,7 +121,7 @@ class LiteMangle:
         """
         weight = N.zeros(self.npoly)
         for poly in self.polylist:
-            weight[poly[0]] = poly[2]
+            weight[poly[0]] = poly[1]
         return(weight)
 
     def total_area(self):
