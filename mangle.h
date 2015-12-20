@@ -56,7 +56,7 @@ public:
   CapClass(const double x1, const double y1, const double z1, const double cm1){
     x = x1; y = y1; z = z1; cm = cm1;
   }
-  bool incap(const double x0, const double y0, const double z0) {
+  bool incap(const double x0, const double y0, const double z0) const {
     double	cdot;
     bool	tmp;
     cdot = 1.0 - x*x0 - y*y0 - z*z0;
@@ -66,7 +66,7 @@ public:
       tmp = cdot < cm;
     return(tmp);
   }
-  bool incap(const double theta, const double phi) {
+  bool incap(const double theta, const double phi) const {
     double	cdot,x0,y0,z0;
     bool	tmp;
     x0 = sin(theta)*cos(phi);
@@ -94,13 +94,13 @@ public:
     weight = 0;
     pid    = 0;
   }
-  long getid() {
+  long getid() const {
     return(pid);
   }
   void setid(const long pid1) {
     pid = pid1;
   }
-  double getwt() {
+  double getwt() const {
     return(weight);
   }
   void setwt(const double wt) {
@@ -109,18 +109,18 @@ public:
   void addcap(CapClass cap1) {
     try {caps.push_back(cap1);} catch(std::exception& e) {myexception(e);}
   }
-  bool inpoly(const double x, const double y, const double z) {
+  bool inpoly(const double x, const double y, const double z) const {
   // Not used currently.
     bool tmp=true;
-    for (std::list<CapClass>::iterator i=caps.begin();
+    for (std::list<CapClass>::const_iterator i=caps.begin();
          i!=caps.end() && tmp; ++i) {
       tmp = tmp && ( i->incap(x,y,z) );
     }
     return(tmp);
   }
-  bool inpoly(const double theta, const double phi) {
+  bool inpoly(const double theta, const double phi) const {
     bool tmp=true;
-    for (std::list<CapClass>::iterator i=caps.begin();
+    for (std::list<CapClass>::const_iterator i=caps.begin();
          i!=caps.end() && tmp; ++i) {
       tmp = tmp && ( i->incap(theta,phi) );
     }
@@ -203,7 +203,7 @@ private:
     }
     return(ipoly);
   }
-  long pixelnum(const double theta, const double phi) {
+  long pixelnum(const double theta, const double phi) const {
   // For the "simple" pixelization we're just Cartesian in cos(theta) & phi.
     long ipix=0;
     if (pixelres>0) {
@@ -287,12 +287,12 @@ public:
     fs.close();
     // If we're pixelized make a list of which polygons lie in each pixel.
     if (pixelres>=0) {
-      try{pixels.resize(maxpix+1);}catch(std::exception& e){myexception(e);}
-      for (int ipoly=0; ipoly<npoly; ++ipoly) {
-        try {
+      try{
+        pixels.resize(maxpix+1);
+        for (int ipoly=0; ipoly<npoly; ++ipoly) {
           pixels[polygons[ipoly].getid()].push_back(ipoly);
-        } catch(std::exception& e) {myexception(e);}
-      }
+        }
+      } catch(std::exception& e) {myexception(e);}
     }
   }
   MaskClass() {
@@ -305,13 +305,13 @@ public:
     pixelres      = -1;
     load(fname);
   }
-  long npolygons() { // For general interest, how many polygons in mask
+  long npolygons() const { // For general interest, how many polygons in mask
     return(polygons.size());
   }
-  double totalarea() { // The area in the mask.
+  double totalarea() const { // The area in the mask.
     return(totalmaskarea);
   }
-  double getweight(const double theta, const double phi) {
+  double getweight(const double theta, const double phi) const {
   // This is the main method, returning the weight at (theta,phi).
   // Note, this is NOT ra and dec but "mathematical" theta and phi.
     bool	notfnd=true;
@@ -335,7 +335,7 @@ public:
         myexit(1);
       }
       if (ipix<pixels.size()) {
-        for (std::list<int>::iterator ii=pixels[ipix].begin();
+        for (std::list<int>::const_iterator ii=pixels[ipix].begin();
              ii!=pixels[ipix].end() && notfnd; ++ii) {
           if (polygons[*ii].inpoly(theta,phi)) {
             wt    = polygons[*ii].getwt();
